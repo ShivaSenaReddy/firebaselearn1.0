@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wdth,wght@0,75..100,100..900;1,75..100,100..900&display=swap"
+    rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>MindLog</h1>
+      <p>A structured, digital journal</p>
+    </header>
+    <div class="loggedOut--View">
+
+      <form>
+        <button class="google--btn"><img src="/public/assets/images/google.png" class="google--img">Sign in with
+          Google</button>
+        <input id="email" type="email" placeholder="Email" />
+        <input id="password" type="password" minlength="8" placeholder="Password" />
+        <button class="sign--in" type="submit">Sign In </button>
+        <button class="create--account" type="button">Create Account</button>
+      </form>
+    </div>
+    <div class="loggedIn--View hidden">
+      <img src='./assets/images/sign-out.svg' height="40px" width="40px" class="sign--out--btn" />
+      <div class="emojis">
+        <div class="emoji" data-id="1">&#128522;</div>
+        <div class="emoji" data-id="2">&#128546;</div>
+        <div class="emoji" data-id="3">&#128544;</div>
+        <div class="emoji" data-id="4">&#128562;</div>
+        <div class="emoji" data-id="5">&#128640;</div>
+      </div>
+
+      <textarea cols="50" rows="5" class="post--text"></textarea>
+      <button class="post--Btn">Post</button>
+      <div class="post">
+        <h3>31 Mar 2025 16:26 &#128640;</h3>
+        <p>I am feeling good. This is just an awesome app I built</p>
+      </div>
+      <div class="post">
+        <h3>31 Mar 2025 16:26</h3>
+        <p>I am feeling good. This is just an awesome app I built</p>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./index.js"></script>
+</body>
+
+</html>
