@@ -220,7 +220,7 @@ async function updatePosts() {
     posts.innerHTML += `
     <div class="post">
   <div>
-     <button class='edit--btn'>    <img src="./public/assets/images/pencil.svg" /></button>
+     <button class='edit--btn'>    <img src="./assets/images/pencil.svg" /></button>
       
       </div>    
             
@@ -235,7 +235,7 @@ async function updatePosts() {
        </div>
        <div>
         <button class='delete--btn'>
-       <img src="./public/assets/images/trash.svg" />
+       <img src="./assets/images/trash.svg" />
         </button>
         </div>
          </div>
