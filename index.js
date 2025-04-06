@@ -2,7 +2,15 @@
 
 //initialise firebase
 import { initializeApp } from "firebase/app";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  onSnapshot,
+  doc,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 import {
   getAuth,
@@ -13,6 +21,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
+import moment from "moment/moment";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -43,11 +52,13 @@ const createAccountBtn = document.querySelector(".create--account");
 const signOutBtn = document.querySelector(".sign--out--btn");
 const googleBtn = document.querySelector(".google--btn");
 const emojis = document.querySelector(".emojis");
+let emojiId = 4;
 const postText = document.querySelector(".post--text");
 const postBtn = document.querySelector(".post--Btn");
+const posts = document.querySelector(".posts");
 console.log(loggedInView);
 const auth = getAuth();
-
+const postsRef = collection(db, "posts");
 const emojisValue = {
   1: "&#128522;",
   2: "&#128546",
@@ -116,7 +127,8 @@ googleBtn.addEventListener("click", (e) => {
       const user = result.user;
       // IdP data available using getAdditionalUserInfo(result)
       // ...
-      console.log(credential, token, user);
+      console.log(user);
+      // getUserDetails(user);
     })
     .catch((error) => {
       // Handle Errors here.
@@ -140,6 +152,7 @@ onAuthStateChanged(auth, (user) => {
     // ...
     showLoggedInView();
     console.log("signed in");
+    getUserDetails();
   } else {
     // User is signed out
     // ...
@@ -171,17 +184,91 @@ signOutBtn.addEventListener("click", () => {
 emojis.addEventListener("click", (e) => {
   if (e.target.classList.contains("emoji")) {
     console.log(e.target.dataset);
-    const id = e.target.dataset.id;
-    console.log(emojisValue[id]);
+    emojiId = e.target.dataset.id;
+    console.log(emojisValue[emojiId]);
   }
 });
 
 postBtn.addEventListener("click", async function (e) {
+  const user = auth.currentUser;
+  console.log(user);
   console.log(postText.value);
   const docRef = await addDoc(collection(db, "posts"), {
     body: postText.value,
     createdAt: new Date(),
-    mood: 4,
+    mood: emojiId,
+    uid: user.uid,
   });
   console.log("Document written with ID: ", docRef.id);
+  updatePosts();
+
+  postText.value = "";
 });
+
+async function updatePosts() {
+  const q = query(postsRef, orderBy("createdAt", "desc"));
+  const querySnapshot = await getDocs(q);
+  posts.innerHTML = "";
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    // console.log(doc.id, " => ", doc.data());
+    const { createdAt, body, mood } = doc.data();
+    // console.log(createdAt.toDate().toString().substring(0, 25));
+    // console.log(emojisValue[mood]);
+    let expressionEmoji = "&#128528;";
+    if (emojisValue[mood]) expressionEmoji = emojisValue[mood];
+    posts.innerHTML += `
+    <div class="post">
+  <div>
+     <button class='edit--btn'>    <img src="./public/assets/images/pencil.svg" /></button>
+      
+      </div>    
+            
+           <p>${body}</p>
+           <div>
+       <p class='created--date'>${createdAt
+         .toDate()
+         .toString()
+         .substring(0, 25)} &#128640;
+               </p>
+               <p class='post--emoji'>  ${expressionEmoji}</p>
+       </div>
+       <div>
+        <button class='delete--btn'>
+       <img src="./public/assets/images/trash.svg" />
+        </button>
+        </div>
+         </div>
+   `;
+  });
+}
+const unsubscribe = onSnapshot(collection(db, "posts"), (querySnapshot) => {
+  const posts = [];
+  querySnapshot.forEach((doc) => {
+    posts.push(doc.data().body);
+    updatePosts();
+  });
+  // console.log("Current posts : ", posts.join(", "));
+});
+
+function getUserDetails() {
+  const user = auth.currentUser;
+  console.log(user);
+  console.log("fetcih userifn");
+  if (user !== null) {
+    // The user object has basic properties such as display name, email, etc.
+    const displayName = user.displayName;
+    const email = user.email;
+    const photoURL = user.photoURL;
+    const emailVerified = user.emailVerified;
+
+    // The user's ID, unique to the Firebase project. Do NOT use
+    // this value to authenticate with your backend server, if
+    // you have one. Use User.getToken() instead.
+    const uid = user.uid;
+    console.log(displayName, email, photoURL);
+    document.querySelector(".profile--pic").src = photoURL;
+  } else {
+    console.log(user);
+  }
+}

@@ -29,6 +29,10 @@
       </form>
     </div>
     <div class="loggedIn--View hidden">
+      <div class="user--info">
+        <p class="greeting">Hi User, How are you feeling today</p>
+        <img class="profile--pic" src="./public/assets/images/profilepic.jpg" />
+      </div>
       <img src='./assets/images/sign-out.svg' height="40px" width="40px" class="sign--out--btn" />
       <div class="emojis">
         <div class="emoji" data-id="1">&#128522;</div>
@@ -40,15 +44,19 @@
 
       <textarea cols="50" rows="5" class="post--text"></textarea>
       <button class="post--Btn">Post</button>
-      <div class="post">
-        <h3>31 Mar 2025 16:26 &#128640;</h3>
-        <p>I am feeling good. This is just an awesome app I built</p>
-      </div>
-      <div class="post">
-        <h3>31 Mar 2025 16:26</h3>
-        <p>I am feeling good. This is just an awesome app I built</p>
+      <div class="posts">
+        <div class="post">
+          <h3>31 Mar 2025 16:26 &#128640;</h3>
+          <p>I am feeling good. This is just an awesome app I built</p>
+        </div>
+        <div class="post">
+          <h3>31 Mar 2025 16:26 &#128640;</h3>
+          <p>I am feeling good. This is just an awesome app I built</p>
+        </div>
       </div>
     </div>
+
+
   </div>
   <script type="module" src="./index.js"></script>
 </body>
