@@ -10,6 +10,8 @@ import {
   doc,
   orderBy,
   query,
+  deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 import {
@@ -212,6 +214,8 @@ async function updatePosts() {
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     // console.log(doc.id, " => ", doc.data());
+    console.log(doc.data());
+    const docId = doc.id;
     const { createdAt, body, mood } = doc.data();
     // console.log(createdAt.toDate().toString().substring(0, 25));
     // console.log(emojisValue[mood]);
@@ -220,7 +224,7 @@ async function updatePosts() {
     posts.innerHTML += `
     <div class="post">
   <div>
-     <button class='edit--btn'>    <img src="./assets/images/pencil.svg" /></button>
+     <button class='edit--btn' data-id=${docId} >    <img src="./assets/images/pencil.svg" /></button>
       
       </div>    
             
@@ -234,7 +238,7 @@ async function updatePosts() {
                <p class='post--emoji'>  ${expressionEmoji}</p>
        </div>
        <div>
-        <button class='delete--btn'>
+        <button class='delete--btn' data-id=${docId}>
        <img src="./assets/images/trash.svg" />
         </button>
         </div>
@@ -268,7 +272,31 @@ function getUserDetails() {
     const uid = user.uid;
     console.log(displayName, email, photoURL);
     document.querySelector(".profile--pic").src = photoURL;
+    document.querySelector(
+      ".greeting"
+    ).textContent = `Hi ${displayName},how are you feeling today?`;
   } else {
     console.log(user);
   }
 }
+
+function deletePost(uid) {
+  console.log(uid);
+}
+
+posts.addEventListener("click", async function (e) {
+  if (e.target.closest("button")) {
+    const button = e.target.closest("button");
+    const postId = button.dataset.id;
+    console.log(postId);
+    if (button.classList.contains("delete--btn"))
+      await deleteDoc(doc(db, "posts", postId));
+    else if (button.classList.contains("edit--btn")) {
+      const textEdit = prompt("Please enter the new text");
+      const postRef = doc(db, "posts", postId);
+      await updateDoc(postRef, {
+        body: textEdit,
+      });
+    }
+  }
+});
