@@ -156,6 +156,7 @@ onAuthStateChanged(auth, (user) => {
     showLoggedInView();
     console.log("signed in");
     getUserDetails();
+    updatePosts();
   } else {
     // User is signed out
     // ...
