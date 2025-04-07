@@ -12,6 +12,7 @@ import {
   query,
   deleteDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 import {
@@ -208,7 +209,13 @@ postBtn.addEventListener("click", async function (e) {
 });
 
 async function updatePosts() {
-  const q = query(postsRef, orderBy("createdAt", "desc"));
+  const user = auth.currentUser;
+  console.log(user.uid);
+  const q = query(
+    postsRef,
+    orderBy("createdAt", "desc"),
+    where("uid", "==", user.uid)
+  );
   const querySnapshot = await getDocs(q);
   posts.innerHTML = "";
   querySnapshot.forEach((doc) => {
@@ -271,10 +278,11 @@ function getUserDetails() {
     // you have one. Use User.getToken() instead.
     const uid = user.uid;
     console.log(displayName, email, photoURL);
-    document.querySelector(".profile--pic").src = photoURL;
-    document.querySelector(
-      ".greeting"
-    ).textContent = `Hi ${displayName},how are you feeling today?`;
+    if (photoURL) document.querySelector(".profile--pic").src = photoURL;
+    if (displayName)
+      document.querySelector(
+        ".greeting"
+      ).textContent = `Hi ${displayName},how are you feeling today?`;
   } else {
     console.log(user);
   }
